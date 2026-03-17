@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Box App</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+        #canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid black;
+            background-color: #bdbdbd; /* Added a light background to see the play area */
+        }
+        p {
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <p id="score"></p>
+    <p id="speed"></p>
+    <canvas id="canvas" width="800" height="500"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const scoreElement = document.getElementById('score');
+        const speedElement = document.getElementById('speed');
+
+        const ctx = canvas.getContext('2d');
+        const jumpSound = new Audio('sound.mp3');
+
+        // Starting coordinates
+        let horizontal = 50;
+        let vertical = 50;
+        let speed = 5; // Speed of movement in pixels per frame
+        let food;
+        let score = 0;
+        scoreElement.textContent = `Score: ${score}`;
+        speedElement.textContent = `Speed: ${speed}`;
+
+        // Object to track which keys are currently being held down
+        const keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+        food = {
+            x: Math.random() * (canvas.width - 20),
+            y: Math.random() * (canvas.height - 20)
+        };
+        ctx.fillStyle = 'green';
+        ctx.fillRect(food.x, food.y, 20, 20);
+
+        // When a key is pressed, set its state to true
+        window.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = true;
+            }
+        });
+
+        // When a key is released, set its state back to false
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = false;
+            }
+        });
+
+        // The animation loop
+        function animate() {
+            // 1. Clear the entire canvas from the previous frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'green';
+            ctx.fillRect(food.x, food.y, 20, 20);
+
+            // 2. Update positions (speed is set to 2 pixels per frame)
+            if (keys.w) vertical -= speed;   // Up
+            if (keys.s) vertical += speed;   // Down
+            if (keys.a) horizontal -= speed; // Left
+            if (keys.d) horizontal += speed; // Right
+            if (horizontal < 0) horizontal = 0;
+            if (vertical < 0) vertical = 0;
+            if (horizontal > canvas.width - 20) horizontal = canvas.width - 20;
+            if (vertical > canvas.height - 20) vertical = canvas.height - 20;
+            if (Math.abs(horizontal - food.x) < 20 && Math.abs(vertical - food.y) < 20) {
+                food.x = Math.random() * (canvas.width - 20);
+                food.y = Math.random() * (canvas.height - 20);
+                speed += 1;
+                score++;
+                scoreElement.textContent = `Score: ${score}`;
+                speedElement.textContent = `Speed: ${speed}`;
+                jumpSound.pause();
+                jumpSound.currentTime = 0;
+                jumpSound.play();
+            }
+
+            // 3. Draw the updated box
+            ctx.fillStyle = 'red';
+            ctx.fillRect(horizontal, vertical, 20, 20);
+
+            // 4. Tell the browser to run this function again before the next repaint
+            requestAnimationFrame(animate);
+        }
+
+        // Start the animation loop
+        animate();
+    </script>
+</body>
+</html>
