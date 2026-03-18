@@ -1,12 +1,10 @@
-import Header from './components/header.jsx'
-import Main from './components/main.jsx'
-
+import Hero from './components/Hero'
 
 function App() {
   return (
     <>
-      <Header />
-      <Main />
+      <Hero />
+      {/* More sections coming: About, Skills, Projects, Contact */}
     </>
   )
 }
