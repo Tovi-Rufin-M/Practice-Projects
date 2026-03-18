@@ -23,8 +23,11 @@
     </style>
 </head>
 <body>
-    <p id="score"></p>
-    <p id="speed"></p>
+    <div>
+        <p id="score"></p>
+        <p id="speed"></p>        
+    </div>
+    
     <canvas id="canvas" width="800" height="500"></canvas>
 
     <script>
@@ -80,6 +83,16 @@
             ctx.fillRect(food.x, food.y, 20, 20);
 
             // 2. Update positions (speed is set to 2 pixels per frame)
+            Appfunction();
+
+            // 3. Draw the updated box
+            ctx.fillStyle = 'red';
+            ctx.fillRect(horizontal, vertical, 20, 20);
+
+            // 4. Tell the browser to run this function again before the next repaint
+            requestAnimationFrame(animate);
+        }
+        function Appfunction() {
             if (keys.w) vertical -= speed;   // Up
             if (keys.s) vertical += speed;   // Down
             if (keys.a) horizontal -= speed; // Left
@@ -99,14 +112,7 @@
                 jumpSound.currentTime = 0;
                 jumpSound.play();
             }
-
-            // 3. Draw the updated box
-            ctx.fillStyle = 'red';
-            ctx.fillRect(horizontal, vertical, 20, 20);
-
-            // 4. Tell the browser to run this function again before the next repaint
-            requestAnimationFrame(animate);
-        }
+        } 
 
         // Start the animation loop
         animate();
