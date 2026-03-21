@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ParkGrid — Smart Parking System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0c0f;
+    --surface: #13151a;
+    --surface2: #1c1f27;
+    --border: #2a2d38;
+    --accent: #f5c518;
+    --accent2: #ff6b35;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'DM Sans', sans-serif;
+    --header-h: 60px;
+    --mob-nav-h: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,197,24,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,197,24,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* OCCUPANCY BAR */
+  .obar { height: 3px; background: var(--surface2); overflow: hidden; }
+  .obar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--accent), var(--red));
+    transition: width 0.5s ease;
+  }
+
+  /* HEADER */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: var(--header-h); gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(11,12,15,0.92); backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo {
+    font-family: var(--font-display); font-size: 1.9rem;
+    letter-spacing: 0.08em; color: var(--accent);
+    text-shadow: 0 0 24px rgba(245,197,24,0.4); flex-shrink: 0;
+  }
+  .logo span { color: var(--text); }
+  .hstats { display: flex; gap: 20px; flex: 1; justify-content: center; }
+  .hstat { text-align: center; }
+  .hstat-num { font-family: var(--font-mono); font-size: 1.25rem; color: var(--accent); line-height: 1.1; }
+  .hstat-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .time-d {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    padding: 6px 12px; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--surface); flex-shrink: 0;
+  }
+
+  /* DESKTOP 3-COL */
+  .main {
+    display: grid;
+    grid-template-columns: 300px 1fr 280px;
+    min-height: calc(100vh - var(--header-h) - 3px);
+  }
+  .sidebar-l { border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .center { padding: 24px 28px; overflow-y: auto; }
+  .sidebar-r { border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+
+  /* MOBILE BOTTOM NAV */
+  .mob-nav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    height: var(--mob-nav-h); background: rgba(11,12,15,0.96);
+    backdrop-filter: blur(12px); border-top: 1px solid var(--border);
+    z-index: 200; flex-direction: row;
+  }
+  .mob-btn {
+    flex: 1; background: none; border: none; color: var(--muted);
+    cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 3px;
+    font-family: var(--font-mono); font-size: 0.58rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: color 0.2s; padding: 8px 4px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mob-btn .ni { font-size: 1.25rem; line-height: 1; }
+  .mob-btn.active { color: var(--accent); }
+  .mob-btn.active .ni { filter: drop-shadow(0 0 6px rgba(245,197,24,0.6)); }
+
+  /* MOBILE PANELS */
+  .m-panel { display: none; padding: 16px; padding-bottom: calc(var(--mob-nav-h) + 16px); }
+  .m-panel.active { display: block; }
+
+  /* SHARED UI */
+  .sec-title {
+    font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .card-title {
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.08em;
+    color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .fg { margin-bottom: 12px; }
+  label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 5px; font-family: var(--font-mono); }
+  input, select {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 10px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(245,197,24,0.15); }
+  input::placeholder { color: var(--muted); }
+  select option { background: var(--surface2); }
+  .plate-in { font-size: 1.05rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; }
+
+  .btn {
+    width: 100%; padding: 12px; border: none; border-radius: 6px;
+    font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em;
+    cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .btn-in { background: var(--accent); color: #0b0c0f; }
+  .btn-in:active { transform: scale(0.98); }
+  @media (hover:hover) { .btn-in:hover { background: #ffd740; box-shadow: 0 0 20px rgba(245,197,24,0.4); transform: translateY(-1px); } }
+  .btn-out { background: transparent; color: var(--accent2); border: 1px solid var(--accent2); margin-top: 8px; }
+  .btn-out:active { transform: scale(0.98); }
+  @media (hover:hover) { .btn-out:hover { background: var(--accent2); color: white; box-shadow: 0 0 20px rgba(255,107,53,0.3); transform: translateY(-1px); } }
+
+  .search-row { display: flex; gap: 8px; }
+  .btn-srch {
+    background: var(--blue); color: white; border: none;
+    padding: 10px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 1rem; flex-shrink: 0; transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-srch:active { transform: scale(0.96); }
+  .srch-res { margin-top: 10px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); line-height: 1.7; }
+
+  .legend { display: flex; flex-direction: column; gap: 7px; }
+  .leg-item { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; color: var(--muted); font-family: var(--font-mono); }
+  .leg-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  /* GRID */
+  .gh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+  .g-title { font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 0.06em; }
+  .ftabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; }
+  .ftab {
+    padding: 6px 16px; border-radius: 5px; font-family: var(--font-mono); font-size: 0.78rem;
+    cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ftab.active { background: var(--accent); color: #0b0c0f; font-weight: 500; }
+
+  .lot {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 16px; position: relative; overflow: hidden;
+  }
+  .lot::before {
+    content: 'PARKING FACILITY'; position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%); font-family: var(--font-display);
+    font-size: 0.65rem; letter-spacing: 0.3em; color: var(--border); white-space: nowrap;
+  }
+  .road { height: 36px; background: var(--surface2); border-radius: 4px; margin: 10px 0; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .road::after { content: '▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶'; color: var(--border); font-size: 0.65rem; letter-spacing: 0.3em; animation: drift 4s linear infinite; }
+  @keyframes drift { 0%{transform:translateX(0)} 100%{transform:translateX(-40px)} }
+
+  .p-row { display: grid; gap: 5px; margin: 5px 0; }
+  .slot {
+    aspect-ratio: 0.7; border-radius: 5px; border: 1.5px solid; cursor: pointer;
+    transition: all 0.18s; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; font-family: var(--font-mono); font-size: 0.5rem; gap: 1px;
+    overflow: hidden; -webkit-tap-highlight-color: transparent; position: relative;
+  }
+  .slot.available { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.3); color: var(--green); }
+  .slot.available:active { transform: scale(0.93); }
+  @media (hover:hover) { .slot.available:hover { background: rgba(34,197,94,0.2); border-color: var(--green); transform: scale(1.06); box-shadow: 0 0 12px rgba(34,197,94,0.3); } }
+  .slot.occupied { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); color: var(--red); cursor: default; }
+  .slot.reserved { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: var(--blue); cursor: default; }
+  .slot.disabled { background: rgba(107,114,128,0.08); border-color: rgba(107,114,128,0.15); color: #374151; cursor: not-allowed; }
+  .sn { font-weight: 500; font-size: 0.55rem; line-height: 1; }
+  .si { font-size: 0.9rem; line-height: 1; }
+  .sp { font-size: 0.38rem; color: rgba(239,68,68,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 92%; text-align: center; }
+
+  /* REVENUE */
+  .rev-card {
+    background: linear-gradient(135deg, rgba(245,197,24,0.12), rgba(245,197,24,0.04));
+    border: 1px solid rgba(245,197,24,0.3); border-radius: 10px; padding: 16px; text-align: center;
+  }
+  .rev-lbl { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: var(--font-mono); margin-bottom: 6px; }
+  .rev-amt { font-family: var(--font-display); font-size: 2rem; letter-spacing: 0.05em; color: var(--accent); text-shadow: 0 0 20px rgba(245,197,24,0.4); }
+  .rev-sub { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+
+  /* TYPE BARS */
+  .tbars { display: flex; flex-direction: column; gap: 8px; }
+  .tbar-row { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.74rem; }
+  .tlbl { width: 52px; color: var(--muted); }
+  .btrack { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .bfill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .tcnt { width: 22px; text-align: right; color: var(--text); }
+
+  /* ACTIVITY */
+  .afeed { overflow-y: auto; display: flex; flex-direction: column; gap: 7px; max-height: 340px; }
+  .aitem { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-family: var(--font-mono); font-size: 0.74rem; animation: slidein 0.3s ease; border-left: 3px solid; }
+  @keyframes slidein { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
+  .aitem.entry { border-left-color: var(--green); }
+  .aitem.exit { border-left-color: var(--accent2); }
+  .ap { font-weight: 500; font-size: 0.82rem; letter-spacing: 0.1em; }
+  .aitem.entry .ap { color: var(--green); }
+  .aitem.exit .ap { color: var(--accent2); }
+  .ai { color: var(--muted); margin-top: 2px; }
+  .at { color: var(--muted); font-size: 0.62rem; margin-top: 3px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 80px; right: 16px; left: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; font-family: var(--font-mono);
+    font-size: 0.82rem; display: none; z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5); border-left: 4px solid var(--green);
+    animation: tin 0.3s ease;
+  }
+  .toast.show { display: block; }
+  .toast.err { border-left-color: var(--red); }
+  .toast.wrn { border-left-color: var(--accent); }
+  @keyframes tin { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  /* MODAL */
+  .mo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+  .mo.show { display: flex; }
+  .mdl { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: 0 24px 80px rgba(0,0,0,0.6); animation: min 0.25s ease; }
+  @keyframes min { from{opacity:0;transform:scale(0.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  .mt { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 18px; }
+  .rrow { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px dashed var(--border); font-family: var(--font-mono); font-size: 0.8rem; }
+  .rrow:last-of-type { border-bottom: none; }
+  .rk { color: var(--muted); }
+  .rv { color: var(--text); font-weight: 500; }
+  .rrow.rtot .rv { color: var(--accent); font-size: 1.05rem; }
+  .mbtns { display: flex; gap: 10px; margin-top: 18px; }
+  .bc { flex: 1; background: var(--accent2); color: white; border: none; padding: 12px; border-radius: 7px; font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; }
+  .bx { padding: 12px 18px; background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 7px; font-family: var(--font-mono); font-size: 0.82rem; cursor: pointer; }
+
+  /* MOBILE STAT CARDS */
+  .m-scards { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+  .m-sc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; text-align: center; }
+  .m-sn { font-family: var(--font-mono); font-size: 1.2rem; color: var(--accent); }
+  .m-sl { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ── TABLET (641–1024px) ── */
+  @media (max-width: 1024px) and (min-width: 641px) {
+    .main { grid-template-columns: 260px 1fr; grid-template-rows: auto auto; }
+    .sidebar-r {
+      grid-column: 1 / -1; border-left: none; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+    }
+    .act-wrap { grid-column: 1 / -1; }
+    .afeed { max-height: 180px; }
+    .center { padding: 20px; }
+    .hstats { gap: 16px; }
+  }
+
+  /* ── MOBILE (≤640px) ── */
+  @media (max-width: 640px) {
+    :root { --header-h: 52px; }
+    header { padding: 0 14px; }
+    .logo { font-size: 1.5rem; }
+    .hstats { gap: 10px; }
+    .hstat-num { font-size: 1rem; }
+    .hstat-lbl { font-size: 0.55rem; }
+    .time-d { display: none; }
+
+    /* Kill desktop layout */
+    .main { display: block; min-height: unset; }
+    .sidebar-l, .center, .sidebar-r { display: none; }
+
+    /* Show mobile UI */
+    .mob-nav { display: flex; }
+    .m-panel { display: none; }
+    .m-panel.active { display: block; }
+
+    /* Grid: 5 cols on mobile */
+    .p-row { grid-template-columns: repeat(5,1fr) !important; }
+    .sp { display: none; }
+
+    /* Legend horizontal */
+    .legend { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; }
+
+    /* Toast above nav */
+    .toast { bottom: calc(var(--mob-nav-h) + 10px); }
+
+    .afeed { max-height: unset; }
+    .g-title { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="obar"><div class="obar-fill" id="oFill" style="width:0%"></div></div>
+
+  <header>
+    <div class="logo">Park<span>Grid</span></div>
+    <div class="hstats">
+      <div class="hstat"><div class="hstat-num" id="hAv">40</div><div class="hstat-lbl">Available</div></div>
+      <div class="hstat"><div class="hstat-num" id="hOc">0</div><div class="hstat-lbl">Occupied</div></div>
+      <div class="hstat"><div class="hstat-num" id="hPc">0%</div><div class="hstat-lbl">Full</div></div>
+    </div>
+    <div class="time-d" id="tDisp">--:--:--</div>
+  </header>
+
+  <!-- ══ DESKTOP / TABLET ══ -->
+  <div class="main">
+    <div class="sidebar-l">
+      <div class="card">
+        <div class="card-title">⬆ Vehicle Entry</div>
+        <div class="fg"><label>Plate Number</label><input type="text" id="pIn" class="plate-in" placeholder="ABC 1234" maxlength="10" autocomplete="off"></div>
+        <div class="fg"><label>Vehicle Type</label>
+          <select id="vType"><option value="car">🚗 Car</option><option value="motorcycle">🏍 Motorcycle</option><option value="truck">🚛 Truck / Van</option></select>
+        </div>
+        <button class="btn btn-in" onclick="doEntry('pIn','vType')">PARK VEHICLE</button>
+        <button class="btn btn-out" onclick="doExit('pIn')">⬇ PROCESS EXIT</button>
+      </div>
+      <div class="card">
+        <div class="sec-title">Find Vehicle</div>
+        <div class="search-row">
+          <input type="text" id="sIn" placeholder="Plate number..." style="text-transform:uppercase" autocomplete="off">
+          <button class="btn-srch" onclick="doSearch('sIn','sRes')">🔍</button>
+        </div>
+        <div id="sRes" class="srch-res"></div>
+      </div>
+      <div>
+        <div class="sec-title">Legend</div>
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(34,197,94,0.15);border:1.5px solid rgba(34,197,94,0.4)"></div>Available</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.4)"></div>Occupied</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(59,130,246,0.12);border:1.5px solid rgba(59,130,246,0.35)"></div>Reserved</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(107,114,128,0.08);border:1.5px solid rgba(107,114,128,0.2)"></div>Disabled</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="gh">
+        <div class="g-title">FLOOR PLAN</div>
+        <div class="ftabs">
+          <button class="ftab active" data-floor="1">B1</button>
+          <button class="ftab" data-floor="2">B2</button>
+          <button class="ftab" data-floor="3">L1</button>
+        </div>
+      </div>
+      <div class="lot"><div id="dGrid"></div></div>
+    </div>
+
+    <div class="sidebar-r">
+      <div class="rev-card">
+        <div class="rev-lbl">Today's Revenue</div>
+        <div class="rev-amt" id="rAmt">₱0</div>
+        <div class="rev-sub" id="rSub">0 transactions</div>
+      </div>
+      <div>
+        <div class="sec-title">By Vehicle Type</div>
+        <div class="tbars">
+          <div class="tbar-row"><div class="tlbl">Cars</div><div class="btrack"><div class="bfill" id="bCar" style="width:0%;background:var(--blue)"></div></div><div class="tcnt" id="cCar">0</div></div>
+          <div class="tbar-row"><div class="tlbl">Moto</div><div class="btrack"><div class="bfill" id="bMoto" style="width:0%;background:var(--green)"></div></div><div class="tcnt" id="cMoto">0</div></div>
+          <div class="tbar-row"><div class="tlbl">Truck</div><div class="btrack"><div class="bfill" id="bTruck" style="width:0%;background:var(--accent2)"></div></div><div class="tcnt" id="cTruck">0</div></div>
+        </div>
+      </div>
+      <div class="act-wrap">
+        <div class="sec-title">Activity Log</div>
+        <div class="afeed" id="dFeed"><div class="empty-feed">No activity yet...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE PANELS ══ -->
+
+  <!-- Panel 1: Entry & Search -->
+  <div class="m-panel active" id="mp1">
+    <div class="m-scards">
+      <div class="m-sc"><div class="m-sn" id="mAv">40</div><div class="m-sl">Available</div></div>
+      <div class="m-sc"><div class="m-sn" id="mOc">0</div><div class="m-sl">Occupied</div></div>
+      <div class="m-sc"><div class="m-sn" id="mPc">0%</div><div class="m-sl">Full</div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">⬆ Vehicle Entry</div>
+      <div class="fg"><label>Plate Number</label><input type="text" id="mpIn" class="plate-in" placeholder="ABC 1234" maxlength="10" inputmode="text" autocomplete="off"></div>
+      <div class="fg"><label>Vehicle Type</label>
+        <select id="mvType"><option value="car">🚗 Car</option><option value="motorcycle">🏍 Motorcycle</option><option value="truck">🚛 Truck / Van</option></select>
+      </div>
+      <button class="btn btn-in" onclick="doEntry('mpIn','mvType')">PARK VEHICLE</button>
+      <button class="btn btn-out" onclick="doExit('mpIn')">⬇ PROCESS EXIT</button>
+    </div>
+    <div class="card">
+      <div class="sec-title">Find Vehicle</div>
+      <div class="search-row">
+        <input type="text" id="msIn" placeholder="Plate number..." style="text-transform:uppercase" autocomplete="off">
+        <button class="btn-srch" onclick="doSearch('msIn','msRes')">🔍</button>
+      </div>
+      <div id="msRes" class="srch-res"></div>
+    </div>
+  </div>
+
+  <!-- Panel 2: Map -->
+  <div class="m-panel" id="mp2">
+    <div class="gh">
+      <div class="g-title">FLOOR PLAN</div>
+      <div class="ftabs">
+        <button class="ftab active" data-floor="1">B1</button>
+        <button class="ftab" data-floor="2">B2</button>
+        <button class="ftab" data-floor="3">L1</button>
+      </div>
+    </div>
+    <div class="lot" style="margin-bottom:14px"><div id="mGrid"></div></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(34,197,94,0.15);border:1.5px solid rgba(34,197,94,0.4)"></div>Available (tap to park)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.4)"></div>Occupied</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(59,130,246,0.12);border:1.5px solid rgba(59,130,246,0.35)"></div>Reserved</div>
+    </div>
+  </div>
+
+  <!-- Panel 3: Stats -->
+  <div class="m-panel" id="mp3">
+    <div class="rev-card" style="margin-bottom:14px">
+      <div class="rev-lbl">Today's Revenue</div>
+      <div class="rev-amt" id="mrAmt">₱0</div>
+      <div class="rev-sub" id="mrSub">0 transactions</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div class="sec-title">By Vehicle Type</div>
+      <div class="tbars">
+        <div class="tbar-row"><div class="tlbl">Cars</div><div class="btrack"><div class="bfill" id="mbCar" style="width:0%;background:var(--blue)"></div></div><div class="tcnt" id="mcCar">0</div></div>
+        <div class="tbar-row"><div class="tlbl">Moto</div><div class="btrack"><div class="bfill" id="mbMoto" style="width:0%;background:var(--green)"></div></div><div class="tcnt" id="mcMoto">0</div></div>
+        <div class="tbar-row"><div class="tlbl">Truck</div><div class="btrack"><div class="bfill" id="mbTruck" style="width:0%;background:var(--accent2)"></div></div><div class="tcnt" id="mcTruck">0</div></div>
+      </div>
+    </div>
+    <div class="sec-title">Activity Log</div>
+    <div class="afeed" id="mFeed" style="max-height:unset"><div class="empty-feed">No activity yet...</div></div>
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="mob-nav">
+    <button class="mob-btn active" id="mb1" onclick="switchPanel(1)"><span class="ni">🚗</span>Entry</button>
+    <button class="mob-btn" id="mb2" onclick="switchPanel(2)"><span class="ni">🅿️</span>Map</button>
+    <button class="mob-btn" id="mb3" onclick="switchPanel(3)"><span class="ni">📊</span>Stats</button>
+  </nav>
+
+</div><!-- /wrapper -->
+
+<!-- EXIT MODAL -->
+<div class="mo" id="exitMo">
+  <div class="mdl">
+    <div class="mt">⬇ Exit Receipt</div>
+    <div id="rcptContent"></div>
+    <div class="mbtns">
+      <button class="bx" onclick="closeMo()">Cancel</button>
+      <button class="bc" onclick="confirmExit()">CONFIRM & PAY</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const TOTAL = 40;
+  const RATES = { car:50, motorcycle:30, truck:80 };
+
+  let floors = { 1: mkFloor(1), 2: mkFloor(2), 3: mkFloor(3) };
+  let curFloor = 1;
+  let parked = {};
+  let revenue = 0, txCount = 0;
+  let exitTarget = null;
+
+  function mkFloor(f) {
+    return Array.from({length: TOTAL}, (_,i) => {
+      const n = i+1;
+      let state = 'available';
+      if (f===1 && (n===39||n===40)) state = 'disabled';
+      if (f===2 && (n===1||n===2)) state = 'reserved';
+      return { id:`${f}-${n}`, num:n, state, plate:null, vehicleType:null, entryTime:null };
+    });
+  }
+
+  // Clock
+  setInterval(() => {
+    document.getElementById('tDisp').textContent =
+      new Date().toLocaleTimeString('en-PH', {hour12:false});
+  }, 1000);
+
+  // Mobile panel switch
+  function switchPanel(n) {
+    for (let i=1;i<=3;i++) {
+      document.getElementById(`mp${i}`).classList.toggle('active', i===n);
+      document.getElementById(`mb${i}`).classList.toggle('active', i===n);
+    }
+    if (n===2) renderGrid();
+  }
+
+  // Floor tabs — delegate to all .ftab buttons
+  document.querySelectorAll('.ftab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      curFloor = parseInt(btn.dataset.floor);
+      document.querySelectorAll('.ftab').forEach(b => b.classList.toggle('active', b.dataset.floor===btn.dataset.floor));
+      renderGrid();
+    });
+  });
+
+  function isMob() { return window.innerWidth <= 640; }
+
+  function renderGrid() {
+    const slots = floors[curFloor];
+    const totalOcc = Object.keys(parked).length;
+    const totalAv = Object.values(floors).flat().filter(s=>s.state==='available').length;
+    const pct = Math.round(totalOcc/(TOTAL*3)*100);
+
+    setAll({hAv:totalAv, mAv:totalAv, hOc:totalOcc, mOc:totalOcc, hPc:pct+'%', mPc:pct+'%'});
+    document.getElementById('oFill').style.width = pct+'%';
+
+    const mob = isMob();
+    const cols = mob ? 5 : 10;
+    const perRow = mob ? 5 : 10;
+    const rows = TOTAL / perRow;
+
+    let html = '';
+    for (let r=0; r<rows; r++) {
+      if (r === Math.floor(rows/2)) html += `<div class="road"></div>`;
+      html += `<div class="p-row" style="grid-template-columns:repeat(${cols},1fr)">`;
+      html += slots.slice(r*perRow, r*perRow+perRow).map(renderSlot).join('');
+      html += `</div>`;
+    }
+    html += `<div class="road"></div>`;
+
+    const dg = document.getElementById('dGrid');
+    const mg = document.getElementById('mGrid');
+    if (dg) dg.innerHTML = html;
+    if (mg) mg.innerHTML = html;
+
+    updateBars();
+  }
+
+  function renderSlot(s) {
+    const icons = {car:'🚗',motorcycle:'🏍',truck:'🚛',available:'＋',disabled:'♿',reserved:'🔒'};
+    const icon = s.state==='occupied' ? icons[s.vehicleType] : icons[s.state];
+    const click = s.state==='available' ? `onclick="pickSlot('${s.id}')"` : '';
+    const plate = s.plate && !isMob() ? `<div class="sp">${s.plate}</div>` : '';
+    const ttip = s.state==='occupied' ? `${s.plate} | ${s.vehicleType}` : s.state;
+    return `<div class="slot ${s.state}" ${click} title="${ttip} — Slot ${s.num}">
+      <div class="sn">${s.num}</div><div class="si">${icon}</div>${plate}
+    </div>`;
+  }
+
+  function pickSlot(slotId) {
+    const mob = isMob();
+    const plate = document.getElementById(mob ? 'mpIn' : 'pIn').value.trim().toUpperCase();
+    const type  = document.getElementById(mob ? 'mvType' : 'vType').value;
+    if (!plate) { showToast('Enter a plate number first','wrn'); return; }
+    parkIn(plate, type, slotId);
+  }
+
+  // Entry
+  function doEntry(pId, tId) {
+    const plate = document.getElementById(pId).value.trim().toUpperCase();
+    const type  = document.getElementById(tId).value;
+    if (!plate) { showToast('Please enter a plate number','wrn'); return; }
+    if (parked[plate]) { showToast(`${plate} is already parked!`,'err'); return; }
+    const slot = floors[curFloor].find(s=>s.state==='available');
+    if (!slot) { showToast('No available slots on this floor','err'); return; }
+    parkIn(plate, type, slot.id);
+    document.getElementById(pId).value = '';
+  }
+
+  function parkIn(plate, type, slotId) {
+    if (parked[plate]) { showToast(`${plate} already parked!`,'err'); return; }
+    const [f,n] = slotId.split('-').map(Number);
+    const s = floors[f].find(x=>x.id===slotId);
+    if (!s||s.state!=='available') { showToast('Slot unavailable','err'); return; }
+    s.state='occupied'; s.plate=plate; s.vehicleType=type; s.entryTime=new Date();
+    parked[plate] = {slot:slotId, type, entryTime:new Date(), floor:f};
+    clearInputs();
+    addLog('entry', plate, type, `Floor B${f} — Slot ${n}`);
+    showToast(`${plate} parked at Slot ${n} (Floor B${f})`);
+    renderGrid();
+  }
+
+  function clearInputs() {
+    ['pIn','mpIn'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  }
+
+  // Exit
+  function doExit(pId) {
+    const plate = document.getElementById(pId).value.trim().toUpperCase();
+    if (!plate) { showToast('Enter plate number to exit','wrn'); return; }
+    if (!parked[plate]) { showToast(`${plate} not found in system`,'err'); return; }
+    const v = parked[plate];
+    const [f,n] = v.slot.split('-').map(Number);
+    const now = new Date();
+    const mins = Math.max(1, Math.ceil((now - v.entryTime)/60000));
+    const hours = Math.max(1, Math.ceil(mins/60));
+    const fee = RATES[v.type]*hours;
+    exitTarget = {plate, fee, mins, hours, slot:`Floor B${f} — Slot ${n}`, type:v.type};
+    const lbl = {car:'🚗 Car',motorcycle:'🏍 Motorcycle',truck:'🚛 Truck/Van'};
+    document.getElementById('rcptContent').innerHTML = `
+      <div class="rrow"><span class="rk">Plate</span><span class="rv">${plate}</span></div>
+      <div class="rrow"><span class="rk">Vehicle</span><span class="rv">${lbl[v.type]}</span></div>
+      <div class="rrow"><span class="rk">Slot</span><span class="rv">${exitTarget.slot}</span></div>
+      <div class="rrow"><span class="rk">Entry</span><span class="rv">${v.entryTime.toLocaleTimeString()}</span></div>
+      <div class="rrow"><span class="rk">Exit</span><span class="rv">${now.toLocaleTimeString()}</span></div>
+      <div class="rrow"><span class="rk">Duration</span><span class="rv">${mins} min (${hours}h billed)</span></div>
+      <div class="rrow rtot"><span class="rk">TOTAL FEE</span><span class="rv">₱${fee}</span></div>
+    `;
+    document.getElementById('exitMo').classList.add('show');
+  }
+
+  function confirmExit() {
+    if (!exitTarget) return;
+    const {plate,fee,type} = exitTarget;
+    const v = parked[plate];
+    if (v) {
+      const s = floors[v.floor].find(sl=>sl.id===v.slot);
+      if (s) { s.state='available'; s.plate=null; s.vehicleType=null; s.entryTime=null; }
+    }
+    delete parked[plate];
+    revenue+=fee; txCount++;
+    setAll({rAmt:`₱${revenue.toLocaleString()}`, mrAmt:`₱${revenue.toLocaleString()}`,
+            rSub:`${txCount} transaction${txCount!==1?'s':''}`,
+            mrSub:`${txCount} transaction${txCount!==1?'s':''}`});
+    addLog('exit', plate, type, `${exitTarget.slot} | ₱${fee} collected`);
+    showToast(`${plate} exited. ₱${fee} collected.`);
+    closeMo(); clearInputs(); renderGrid(); exitTarget=null;
+  }
+
+  function closeMo() { document.getElementById('exitMo').classList.remove('show'); }
+  document.getElementById('exitMo').addEventListener('click', e => { if(e.target.id==='exitMo') closeMo(); });
+
+  // Search
+  function doSearch(inId, resId) {
+    const q = document.getElementById(inId).value.trim().toUpperCase();
+    const el = document.getElementById(resId);
+    if (!q) { el.innerHTML=''; return; }
+    const v = parked[q];
+    if (!v) { el.innerHTML=`<div style="color:var(--red)">Vehicle not found</div>`; return; }
+    const [f,n] = v.slot.split('-').map(Number);
+    const mins = Math.max(1, Math.ceil((new Date()-v.entryTime)/60000));
+    const fee = RATES[v.type]*Math.max(1,Math.ceil(mins/60));
+    el.innerHTML = `<div style="color:var(--green)">📍 Floor B${f} — Slot ${n}<br>🚗 ${v.type}<br>⏱ ${mins} min parked<br>₱ ~₱${fee} est. fee</div>`;
+  }
+
+  // Bind search/plate inputs
+  ['sIn','msIn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('keyup', e => {
+      el.value = el.value.toUpperCase();
+      if (e.key==='Enter') doSearch(id, id==='sIn'?'sRes':'msRes');
+    });
+  });
+  ['pIn','mpIn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', e => e.target.value=e.target.value.toUpperCase());
+  });
+
+  // Activity log
+  function addLog(kind, plate, type, detail) {
+    const time = new Date().toLocaleTimeString();
+    const ti = {car:'🚗',motorcycle:'🏍',truck:'🚛'};
+    const icon = kind==='entry'?'⬆':'⬇';
+    const html = `<div class="ap">${icon} ${plate} ${ti[type]}</div><div class="ai">${detail}</div><div class="at">${time}</div>`;
+    ['dFeed','mFeed'].forEach(fid => {
+      const feed = document.getElementById(fid);
+      if (!feed) return;
+      const empty = feed.querySelector('.empty-feed');
+      if (empty) feed.innerHTML = '';
+      const item = document.createElement('div');
+      item.className = `aitem ${kind}`;
+      item.innerHTML = html;
+      feed.insertBefore(item, feed.firstChild);
+      while (feed.children.length>20) feed.removeChild(feed.lastChild);
+    });
+  }
+
+  // Type bars
+  function updateBars() {
+    const c = {car:0,motorcycle:0,truck:0};
+    for (const p in parked) c[parked[p].type]++;
+    const tot = Math.max(1, Object.values(c).reduce((a,b)=>a+b,0));
+    [['bCar','mbCar','cCar','mcCar','car'],
+     ['bMoto','mbMoto','cMoto','mcMoto','motorcycle'],
+     ['bTruck','mbTruck','cTruck','mcTruck','truck']].forEach(([b1,b2,c1,c2,k]) => {
+      const w = (c[k]/tot*100)+'%';
+      [b1,b2].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=w;});
+      [c1,c2].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=c[k];});
+    });
+  }
+
+  // Toast
+  function showToast(msg, type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast show${type?' '+type:''}`;
+    clearTimeout(t._t);
+    t._t = setTimeout(()=>t.classList.remove('show'), 3000);
+  }
+
+  // Util: set multiple element text/content
+  function setAll(map) {
+    for (const id in map) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = map[id];
+    }
+  }
+
+  // Re-render on resize
+  let rsz;
+  window.addEventListener('resize', ()=>{ clearTimeout(rsz); rsz=setTimeout(renderGrid,150); });
+
+  renderGrid();
+</script>
+</body>
+</html>
