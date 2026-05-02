@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+/* =========================================================
+   RESET
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif, helvetica, arial;
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+/* =========================================================
+   BANNER
+   ========================================================= */
+.aims-banner {
+  background: #830001;
+  background-image: radial-gradient(circle, #ffffff, #830001);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-height: 85px;
+  padding: 5px 0;
+}
+.aims-banner > .image { max-height: 75px; width: 800px; }
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+.aims-container { width: 100%; padding: 0 5vw; }
+.aims-content { min-height: calc(100% - 85px); margin-bottom: -8.75em; }
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+.aims-background {
+  background: #E1888C;
+  background-image: linear-gradient(to bottom, #ffffff, #C7232B);
+  background-attachment: fixed;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.aims-footer, .pusher {
+  clear: both; width: 100%; padding: 1em 0;
+  height: 8.75em; font-size: 12px;
+}
+.aims-footer hr { margin: 1em 0; border: 1px dashed #777; }
+.aims-footer p { margin: 0; }
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+.text-center { text-align: center; }
+h1 { font-size: 1.6em; color: #830001; text-shadow: 0 1px 0 rgba(255,255,255,0.6); margin: 0; }
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-button { background-color: #b71921; }
+::-webkit-scrollbar-track  { background-color: #b71921; }
+::-webkit-scrollbar-thumb  { background-color: rgba(255,255,255,0.2); }
+
+/* =========================================================
+   LOGIN PANEL CARD
+   ========================================================= */
+.aims-loginpanel {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  padding: 1.2em 1.4em;
+  margin-bottom: 1.5em;
+}
+.aims-loginpanel-header {
+  background: #830001;
+  color: #fff;
+  margin: -1.2em -1.4em 1em -1.4em;
+  padding: 0.7em 1.4em;
+  border-radius: 4px 4px 0 0;
+  font-weight: 700;
+  font-size: 1.1em;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.aims-loginpanel-header .panel-icon { font-size: 1.2em; }
+
+/* =========================================================
+   STUDENT INFO STRIP
+   ========================================================= */
+.student-info-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.2em;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.6em 1em;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
+.student-info-strip .info-item { display: flex; align-items: center; gap: 0.3em; }
+.student-info-strip .info-label { color: #888; }
+.student-info-strip .info-value { font-weight: 700; color: #222; }
+
+/* =========================================================
+   TABS (Regular | Tutorial | Summer)
+   ========================================================= */
+.enrollment-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 3px solid #830001;
+}
+.enrollment-tab {
+  padding: 0.55em 1.3em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  background: #eee;
+  color: #555;
+  font-weight: 600;
+  font-size: 1em;
+  border-radius: 4px 4px 0 0;
+  margin-right: 3px;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  user-select: none;
+}
+.enrollment-tab:hover { background: #ffdada; color: #830001; }
+.enrollment-tab.active {
+  background: #830001;
+  color: #fff;
+  border-color: #830001;
+}
+.enrollment-tab .tab-badge {
+  background: rgba(255,255,255,0.25);
+  border-radius: 10px;
+  font-size: 0.85em;
+  padding: 0 0.45em;
+  font-weight: 700;
+}
+.enrollment-tab.active .tab-badge { background: rgba(255,255,255,0.3); }
+
+/* Tab Panes */
+.tab-content { padding-top: 1em; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* =========================================================
+   UNIT LOAD COUNTER
+   ========================================================= */
+.unit-load-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.5em 1em;
+  margin-bottom: 0.9em;
+  flex-wrap: wrap;
+}
+.unit-load-label { font-weight: 700; color: #830001; white-space: nowrap; }
+.unit-load-track {
+  flex: 1;
+  min-width: 120px;
+  height: 14px;
+  background: #ddd;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+}
+.unit-load-fill {
+  height: 100%;
+  border-radius: 7px;
+  background: #830001;
+  transition: width 0.4s ease;
+  position: relative;
+}
+.unit-load-fill.warn   { background: #c98000; }
+.unit-load-fill.over   { background: #c00; animation: pulse-red 0.7s infinite alternate; }
+@keyframes pulse-red { from { opacity:1; } to { opacity:0.65; } }
+
+.unit-load-count {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #222;
+  white-space: nowrap;
+}
+.unit-load-count .over-limit { color: #c00; }
+.unit-load-limit-note { font-size: 0.95em; color: #777; white-space: nowrap; }
+
+/* =========================================================
+   TOOLBAR (search + cross-program toggle)
+   ========================================================= */
+.enlist-toolbar {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.8em;
+}
+.enlist-search {
+  flex: 1;
+  min-width: 160px;
+  padding: 0.4em 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+  outline: none;
+}
+.enlist-search:focus { border-color: #830001; box-shadow: 0 0 0 2px rgba(131,0,1,0.15); }
+
+.cross-program-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  color: #830001;
+  border: 1px solid #830001;
+  border-radius: 3px;
+  padding: 0.35em 0.8em;
+  background: #fff;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.cross-program-toggle:hover { background: #fff0f0; }
+.cross-program-toggle.active { background: #830001; color: #fff; }
+.cross-program-toggle .toggle-icon { font-size: 1.1em; }
+
+/* Cross-program filter row */
+.cross-program-panel {
+  display: none;
+  background: #fff8f8;
+  border: 1px solid #e8b0b0;
+  border-radius: 3px;
+  padding: 0.6em 1em;
+  margin-bottom: 0.8em;
+  gap: 0.6em;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cross-program-panel.open { display: flex; }
+.cross-program-panel label { font-weight: 600; color: #830001; }
+.cross-program-panel select {
+  padding: 0.3em 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+}
+.cross-program-note {
+  font-size: 0.95em;
+  color: #888;
+  font-style: italic;
+}
+
+/* =========================================================
+   SUBJECT TABLE
+   ========================================================= */
+.subject-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-bottom: 1em;
+}
+.subject-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1em;
+  min-width: 680px;
+}
+.subject-table thead tr {
+  background: #830001;
+  color: #fff;
+}
+.subject-table thead th {
+  padding: 0.55em 0.7em;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.subject-table thead th:first-child { text-align: center; width: 36px; }
+
+.subject-table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background 0.12s;
+}
+.subject-table tbody tr:hover:not(.row-locked):not(.row-full) { background: #fff8f8; }
+.subject-table tbody tr:last-child { border-bottom: none; }
+.subject-table tbody td { padding: 0.5em 0.7em; vertical-align: middle; }
+.subject-table tbody td:first-child { text-align: center; }
+
+/* Row states */
+.row-locked { background: #f5f5f5 !important; }
+.row-locked td { color: #aaa; }
+.row-full td { color: #999; }
+.row-cross-program td { background: #fffbf0; }
+.row-selected { background: #fff0f0 !important; }
+
+/* Subject Code */
+.subj-code { font-weight: 700; color: #830001; white-space: nowrap; font-size: 1.05em; }
+.row-locked .subj-code { color: #bbb; }
+
+/* Units badge */
+.units-badge {
+  display: inline-block;
+  background: #830001;
+  color: #fff;
+  border-radius: 10px;
+  padding: 0 0.55em;
+  font-weight: 700;
+  font-size: 0.95em;
+  min-width: 2em;
+  text-align: center;
+}
+.row-locked .units-badge { background: #bbb; }
+.row-full  .units-badge { background: #ccc; color: #888; }
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.2em 0.6em;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+.badge-available  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.badge-locked     { background: #f5f5f5; color: #888; border: 1px solid #ddd; }
+.badge-full       { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.badge-cross      { background: #e8eaf6; color: #3949ab; border: 1px solid #9fa8da; }
+.badge-enlisted   { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+
+/* Prerequisite tooltip area */
+.prereq-info {
+  font-size: 0.9em;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+  cursor: help;
+  position: relative;
+}
+.prereq-info:hover .prereq-tooltip {
+  display: block;
+}
+.prereq-tooltip {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 1.5em;
+  z-index: 99;
+  background: #333;
+  color: #fff;
+  border-radius: 3px;
+  padding: 0.4em 0.7em;
+  font-size: 0.95em;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Schedule cell */
+.schedule-cell { font-size: 0.95em; line-height: 1.5; }
+.schedule-day  { font-weight: 700; color: #555; }
+.schedule-time { color: #777; }
+
+/* Slot indicator */
+.slot-indicator { font-size: 0.9em; }
+.slot-ok  { color: #2e7d32; }
+.slot-low { color: #c98000; font-weight: 700; }
+.slot-none{ color: #c00; }
+
+/* Checkbox styling */
+.enlist-check {
+  width: 16px; height: 16px;
+  accent-color: #830001;
+  cursor: pointer;
+}
+.enlist-check:disabled { cursor: not-allowed; opacity: 0.4; }
+
+/* =========================================================
+   ACTION FOOTER (Enlist Button)
+   ========================================================= */
+.enlist-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  padding: 0.7em 0 0;
+  border-top: 1px solid #eee;
+}
+.enlist-selected-summary { font-size: 1em; color: #555; }
+.enlist-selected-summary strong { color: #830001; }
+
+.aims-button {
+  display: inline-block;
+  padding: 0.55em 1.5em;
+  border: none;
+  border-radius: 3px;
+  font-size: 1.05em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  min-width: 120px;
+  text-align: center;
+}
+.aims-button:active { transform: scale(0.97); }
+.btn-primary { background: #830001; color: #fff; }
+.btn-primary:hover { background: #6a0001; }
+.btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+.btn-secondary { background: #fff; color: #830001; border: 1.5px solid #830001; }
+.btn-secondary:hover { background: #fff0f0; }
+.btn-danger { background: #555; color: #fff; }
+.btn-danger:hover { background: #333; }
+
+/* =========================================================
+   TUTORIAL / SUMMER PANELS
+   ========================================================= */
+.special-class-info {
+  background: #fff8f8;
+  border-left: 4px solid #830001;
+  padding: 0.8em 1.1em;
+  margin-bottom: 1em;
+  border-radius: 0 3px 3px 0;
+  font-size: 1em;
+  line-height: 1.7;
+}
+.special-class-info strong { color: #830001; }
+
+.special-subject-table { margin-top: 0.5em; }
+
+/* Form rows for special enrollment */
+.form-row {
+  display: flex;
+  gap: 0.8em;
+  flex-wrap: wrap;
+  margin-bottom: 0.7em;
+  align-items: flex-end;
+}
+.form-group { display: flex; flex-direction: column; gap: 0.25em; flex: 1; min-width: 140px; }
+.form-group label { font-weight: 600; color: #555; }
+.form-group select,
+.form-group input[type="text"] {
+  padding: 0.4em 0.6em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+}
+.form-group select:focus,
+.form-group input:focus { border-color: #830001; outline: none; box-shadow: 0 0 0 2px rgba(131,0,1,0.15); }
+
+/* =========================================================
+   CONFIRMATION MODAL OVERLAY
+   ========================================================= */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+.modal-header {
+  background: #830001; color: #fff;
+  padding: 0.8em 1.2em;
+  font-weight: 700;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.modal-body { padding: 1.2em 1.4em; font-size: 1em; }
+.modal-body ul { margin: 0.5em 0 0.5em 1.2em; padding: 0; }
+.modal-body ul li { margin-bottom: 0.3em; }
+.modal-footer {
+  padding: 0.8em 1.2em;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6em;
+  border-top: 1px solid #eee;
+}
+
+/* =========================================================
+   TOAST NOTIFICATION
+   ========================================================= */
+.toast-container {
+  position: fixed;
+  bottom: 1.5em;
+  right: 1.5em;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.toast {
+  background: #333; color: #fff;
+  padding: 0.7em 1.2em;
+  border-radius: 4px;
+  font-size: 1.05em;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  display: flex; align-items: center; gap: 0.5em;
+  animation: slideInToast 0.3s ease;
+  max-width: 320px;
+}
+.toast.success { background: #2e7d32; }
+.toast.error   { background: #830001; }
+.toast.warn    { background: #c98000; }
+@keyframes slideInToast {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 768px) {
+  .aims-banner > .image { width: 100%; }
+  .aims-loginpanel { width: 90%; float: none; margin: 0 auto; }
+  .enrollment-tabs { flex-wrap: wrap; }
+  .enrollment-tab { font-size: 0.95em; padding: 0.45em 0.9em; }
+}
+@media (max-width: 480px) {
+  .aims-loginpanel { width: 100%; border-radius: 0; box-shadow: none; padding: 0.5em 1em; }
+  html, body { height: 100%; }
+  .aims-content { min-height: calc(100vh); }
+  .aims-button { min-width: 0; width: 48%; }
+  .enlist-action-bar { flex-direction: column; align-items: stretch; }
+  .aims-button { width: 100%; }
+}
+    </style>
+    <title>TUP-Visayas — Enrollment Module</title>
+</head>
+<body>
+
+<!-- ====================== BANNER ====================== -->
+<div class="aims-banner">
+  <img class="image" src="des_UIPEN.png" alt="TUP-Visayas Enrollment System">
+</div>
+
+<!-- ====================== MAIN CONTENT ====================== -->
+<div class="aims-content aims-container aims-background">
+  <br>
+  <h1 class="text-center">Enrollment Module</h1>
+  <br>
+
+  <!-- ╔══════════════════════════════════════════════════╗
+       ║   SUBJECT ENLISTMENT MODULE                      ║
+       ╚══════════════════════════════════════════════════╝ -->
+
+  <!-- STUDENT INFO CARD -->
+  <div class="aims-loginpanel">
+    <div class="aims-loginpanel-header">
+      <span class="panel-icon">🎓</span> Student Information
+    </div>
+    <div class="student-info-strip">
+      <div class="info-item"><span class="info-label">Student No.:</span> <span class="info-value">2023-10042</span></div>
+      <div class="info-item"><span class="info-label">Name:</span> <span class="info-value">DE LA CRUZ, JUAN A.</span></div>
+      <div class="info-item"><span class="info-label">Program:</span> <span class="info-value">BSIT</span></div>
+      <div class="info-item"><span class="info-label">Year &amp; Section:</span> <span class="info-value">1-A</span></div>
+      <div class="info-item"><span class="info-label">Semester:</span> <span class="info-value">2nd Sem, A.Y. 2024–2025</span></div>
+      <div class="info-item"><span class="info-label">Status:</span> <span class="info-value" style="color:#2e7d32;">&#10003; Regular</span></div>
+    </div>
+  </div>
+
+  <!-- ENLISTMENT PANEL -->
+  <div class="aims-loginpanel">
+    <div class="aims-loginpanel-header">
+      <span class="panel-icon">📋</span> Subject Enlistment
+    </div>
+
+    <!-- TABS -->
+    <div class="enrollment-tabs">
+      <div class="enrollment-tab active" onclick="switchTab('regular', this)">
+        📚 Regular Enrollment <span class="tab-badge" id="tab-badge-regular">0</span>
+      </div>
+      <div class="enrollment-tab" onclick="switchTab('tutorial', this)">
+        🔄 Tutorial Class
+      </div>
+      <div class="enrollment-tab" onclick="switchTab('summer', this)">
+        ☀️ Summer Class
+      </div>
+    </div>
+
+    <div class="tab-content">
+
+      <!-- ═══════════════════ REGULAR ENROLLMENT ═══════════════════ -->
+      <div class="tab-pane active" id="pane-regular">
+
+        <!-- UNIT LOAD COUNTER -->
+        <div class="unit-load-bar-wrap">
+          <span class="unit-load-label">📊 Unit Load:</span>
+          <div class="unit-load-track">
+            <div class="unit-load-fill" id="unit-fill" style="width:0%;"></div>
+          </div>
+          <span class="unit-load-count">
+            <span id="unit-current">0</span> / <span id="unit-max">25</span> units
+          </span>
+          <span class="unit-load-limit-note">Prescribed limit: 25 units</span>
+          <span id="unit-warn-msg" style="color:#c98000;font-weight:700;display:none;">⚠️ Near limit!</span>
+          <span id="unit-over-msg" style="color:#c00;font-weight:700;display:none;">🚫 Over limit!</span>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="enlist-toolbar">
+          <input class="enlist-search" type="text" id="subjectSearch"
+                 placeholder="🔍  Search by subject code or name..."
+                 oninput="filterSubjects(this.value)">
+          <button class="cross-program-toggle" id="crossProgramBtn"
+                  onclick="toggleCrossProgram()">
+            <span class="toggle-icon">🔀</span> Find Subjects in Other Programs
+          </button>
+        </div>
+
+        <!-- CROSS-PROGRAM FILTER PANEL -->
+        <div class="cross-program-panel" id="crossProgramPanel">
+          <label>📂 Program:</label>
+          <select id="crossProgramSelect" onchange="loadCrossProgram()">
+            <option value="">— Select Program —</option>
+            <option value="BSCS">BS Computer Science (BSCS)</option>
+            <option value="BSCE">BS Civil Engineering (BSCE)</option>
+            <option value="BSEE">BS Electrical Engineering (BSEE)</option>
+            <option value="BSME">BS Mechanical Engineering (BSME)</option>
+            <option value="BSEM">BS Electronics Engineering (BSEM)</option>
+          </select>
+          <select id="crossYearSelect" onchange="loadCrossProgram()">
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+          </select>
+          <span class="cross-program-note">
+            ℹ️ Only failed/retake subjects may be enlisted from other programs.
+          </span>
+        </div>
+
+        <!-- SUBJECT TABLE -->
+        <div class="subject-table-wrap">
+          <table class="subject-table" id="subjectTable">
+            <thead>
+              <tr>
+                <th title="Select to enlist">✔</th>
+                <th>Subject Code</th>
+                <th>Subject / Description</th>
+                <th>Units</th>
+                <th>Schedule</th>
+                <th>Room</th>
+                <th>Instructor</th>
+                <th>Slots</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="subjectTableBody">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="enlist-action-bar">
+          <span class="enlist-selected-summary">
+            Selected: <strong id="selected-count">0</strong> subject(s) —
+            <strong id="selected-units">0</strong> unit(s)
+          </span>
+          <div style="display:flex;gap:0.5em;flex-wrap:wrap;">
+            <button class="aims-button btn-danger" onclick="clearAll()">✖ Clear All</button>
+            <button class="aims-button btn-primary" id="enlistBtn"
+                    onclick="openConfirmModal()" disabled>
+              ✅ Submit Enlistment
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- END REGULAR -->
+
+      <!-- ═══════════════════ TUTORIAL CLASS ═══════════════════ -->
+      <div class="tab-pane" id="pane-tutorial">
+        <div class="special-class-info">
+          <strong>📌 Tutorial Class Enrollment</strong><br>
+          Tutorial classes are offered to students who need to retake a subject due to a failing grade.
+          A separate tutorial fee applies. Enrollment is subject to the availability of a faculty member
+          and approval by the College Secretary.
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject to Retake</label>
+            <select>
+              <option value="">— Select Subject —</option>
+              <option>IT 101 – Introduction to Computing</option>
+              <option>MATH 111 – Algebra &amp; Trigonometry</option>
+              <option>GE 003 – Mathematics in the Modern World</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred Schedule</label>
+            <select>
+              <option>MWF 7:00–8:00 AM</option>
+              <option>TTH 1:00–2:30 PM</option>
+              <option>SAT 8:00–11:00 AM</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Requested Faculty</label>
+            <select>
+              <option>— No Preference —</option>
+              <option>Prof. M. Santos</option>
+              <option>Prof. R. Cruz</option>
+              <option>Prof. A. Reyes</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:3px;padding:0.6em 1em;margin-bottom:0.8em;font-size:1em;">
+          <strong>Tutorial Fee:</strong> ₱ 500.00 per unit &nbsp;|&nbsp;
+          <strong>Payment Mode:</strong>
+          <select style="border:1px solid #ccc;border-radius:3px;padding:0.2em 0.4em;font-size:1em;">
+            <option>Full Payment</option>
+            <option>Installment (2x)</option>
+          </select>
+        </div>
+
+        <div class="enlist-action-bar" style="border-top:1px solid #eee;padding-top:0.7em;">
+          <span class="enlist-selected-summary">
+            Submitting a Tutorial enrollment request will notify the Registrar.
+          </span>
+          <button class="aims-button btn-primary" onclick="showToast('Tutorial enrollment request submitted!','success')">
+            📨 Submit Request
+          </button>
+        </div>
+      </div>
+      <!-- END TUTORIAL -->
+
+      <!-- ═══════════════════ SUMMER CLASS ═══════════════════ -->
+      <div class="tab-pane" id="pane-summer">
+        <div class="special-class-info">
+          <strong>☀️ Summer Class Enrollment</strong><br>
+          Summer classes run from <strong>May 5 – June 14, 2025</strong>. Students may enroll up to
+          <strong>9 units</strong> maximum during summer term. Only subjects offered in the summer
+          schedule are available below.
+        </div>
+
+        <!-- Mini summer table -->
+        <div class="subject-table-wrap special-subject-table">
+          <table class="subject-table">
+            <thead>
+              <tr>
+                <th>✔</th>
+                <th>Code</th>
+                <th>Subject</th>
+                <th>Units</th>
+                <th>Schedule</th>
+                <th>Instructor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="enlist-check"></td>
+                <td><span class="subj-code">PE 101</span></td>
+                <td>Physical Education 1</td>
+                <td><span class="units-badge">2</span></td>
+                <td><span class="schedule-cell"><span class="schedule-day">MWF</span><br><span class="schedule-time">7:00–8:00 AM</span></span></td>
+                <td>Instr. B. Macaraeg</td>
+                <td><span class="status-badge badge-available">✔ Open</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="enlist-check"></td>
+                <td><span class="subj-code">NSTP 101</span></td>
+                <td>National Service Training Program 1</td>
+                <td><span class="units-badge">3</span></td>
+                <td><span class="schedule-cell"><span class="schedule-day">SAT</span><br><span class="schedule-time">8:00–11:00 AM</span></span></td>
+                <td>Instr. L. Flores</td>
+                <td><span class="status-badge badge-available">✔ Open</span></td>
+              </tr>
+              <tr class="row-full">
+                <td><input type="checkbox" class="enlist-check" disabled></td>
+                <td><span class="subj-code">GE 001</span></td>
+                <td>The Contemporary World</td>
+                <td><span class="units-badge">3</span></td>
+                <td><span class="schedule-cell"><span class="schedule-day">TTH</span><br><span class="schedule-time">10:00–11:30 AM</span></span></td>
+                <td>Prof. C. Ortega</td>
+                <td><span class="status-badge badge-full">⊘ Full</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="enlist-action-bar" style="border-top:1px solid #eee;padding-top:0.7em;margin-top:0.5em;">
+          <span class="enlist-selected-summary">Summer max: <strong>9 units</strong></span>
+          <button class="aims-button btn-primary" onclick="showToast('Summer class enrollment submitted!','success')">
+            ✅ Submit Summer Enrollment
+          </button>
+        </div>
+      </div>
+      <!-- END SUMMER -->
+
+    </div><!-- /tab-content -->
+  </div><!-- /aims-loginpanel enlistment -->
+
+  <div class="pusher"></div>
+</div><!-- /aims-content -->
+
+<!-- ====================== FOOTER ====================== -->
+<div class="aims-footer text-center">
+  <hr>
+  <p>Powered by <img src="logo_AIMS.png" alt="AIMS"> from
+     <img src="logo_Pinnacle.png" alt="Pinnacle Technologies, Inc."></p>
+  <p>For questions and comments, email us at</p>
+  <p><a href="mailto:web.ers@tup.edu.ph">web.ers@tup.edu.ph</a></p>
+</div>
+
+<!-- ====================== CONFIRMATION MODAL ====================== -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <div class="modal-header">⚠️ Confirm Enlistment</div>
+    <div class="modal-body">
+      <p>You are about to enlist in the following subject(s):</p>
+      <ul id="modal-subject-list"></ul>
+      <p>Total units: <strong id="modal-total-units">0</strong></p>
+      <p style="color:#830001;font-weight:600;">
+        Once submitted, changes may require Registrar approval. Continue?
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="aims-button btn-secondary" onclick="closeModal()">✖ Cancel</button>
+      <button class="aims-button btn-primary" onclick="confirmEnlistment()">✅ Confirm &amp; Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== TOAST CONTAINER ====================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ====================== JAVASCRIPT ====================== -->
+<script>
+/* ──────────────────────────────────────────────────────────
+   DATA — Mock subject list (BSIT 1st Year, 2nd Semester)
+   ────────────────────────────────────────────────────────── */
+const UNIT_MAX = 25;
+
+const subjects = [
+  {
+    code: 'IT 102',
+    name: 'Computer Programming 1',
+    units: 3,
+    days: 'MWF',
+    time: '7:00–8:00 AM',
+    room: 'IT Lab 1',
+    instructor: 'Prof. M. Santos',
+    slots: 35, slotsMax: 40,
+    prereqs: [],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+  {
+    code: 'IT 103',
+    name: 'Data Structures & Algorithms',
+    units: 3,
+    days: 'TTH',
+    time: '10:00–11:30 AM',
+    room: 'IT Lab 2',
+    instructor: 'Prof. R. Cruz',
+    slots: 8, slotsMax: 40,
+    prereqs: ['IT 101'],
+    prereqMet: false,
+    status: 'locked',
+    crossProgram: false
+  },
+  {
+    code: 'MATH 112',
+    name: 'Calculus 1',
+    units: 3,
+    days: 'MWF',
+    time: '9:00–10:00 AM',
+    room: 'Room 201',
+    instructor: 'Prof. A. Reyes',
+    slots: 40, slotsMax: 40,
+    prereqs: ['MATH 111'],
+    prereqMet: false,
+    status: 'locked',
+    crossProgram: false
+  },
+  {
+    code: 'GE 002',
+    name: 'Purposive Communication',
+    units: 3,
+    days: 'TTH',
+    time: '1:00–2:30 PM',
+    room: 'Room 105',
+    instructor: 'Prof. L. Flores',
+    slots: 5, slotsMax: 40,
+    prereqs: [],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+  {
+    code: 'GE 004',
+    name: 'Science, Technology & Society',
+    units: 3,
+    days: 'MWF',
+    time: '11:00 AM–12:00 PM',
+    room: 'Room 103',
+    instructor: 'Prof. C. Ortega',
+    slots: 0, slotsMax: 40,
+    prereqs: [],
+    prereqMet: true,
+    status: 'full',
+    crossProgram: false
+  },
+  {
+    code: 'IT 104',
+    name: 'Discrete Mathematics',
+    units: 3,
+    days: 'TTH',
+    time: '7:00–8:30 AM',
+    room: 'Room 202',
+    instructor: 'Prof. B. Macaraeg',
+    slots: 22, slotsMax: 40,
+    prereqs: [],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+  {
+    code: 'IT 105',
+    name: 'Web Development 1',
+    units: 3,
+    days: 'MWF',
+    time: '2:00–3:00 PM',
+    room: 'IT Lab 3',
+    instructor: 'Prof. J. Villanueva',
+    slots: 18, slotsMax: 40,
+    prereqs: ['IT 102'],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+  {
+    code: 'PE 102',
+    name: 'Physical Education 2',
+    units: 2,
+    days: 'SAT',
+    time: '8:00–10:00 AM',
+    room: 'Gymnasium',
+    instructor: 'Instr. V. Tomas',
+    slots: 30, slotsMax: 40,
+    prereqs: [],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+  {
+    code: 'NSTP 102',
+    name: 'CWTS / Literacy Training 2',
+    units: 3,
+    days: 'SAT',
+    time: '1:00–4:00 PM',
+    room: 'Room 104',
+    instructor: 'Instr. P. Guevara',
+    slots: 12, slotsMax: 40,
+    prereqs: ['NSTP 101'],
+    prereqMet: true,
+    status: 'available',
+    crossProgram: false
+  },
+];
+
+// Cross-program mock subjects per program
+const crossProgramSubjects = {
+  BSCS: [
+    { code:'CS 101', name:'Intro to Computer Science', units:3, days:'MWF', time:'8:00–9:00 AM', room:'CS Lab 1', instructor:'Prof. O. Mendez', slots:10, slotsMax:35, prereqs:[], prereqMet:true, status:'available', crossProgram:true },
+    { code:'CS 102', name:'Discrete Structures', units:3, days:'TTH', time:'2:30–4:00 PM', room:'Room 301', instructor:'Prof. S. Tan', slots:5, slotsMax:35, prereqs:[], prereqMet:true, status:'available', crossProgram:true },
+  ],
+  BSCE: [
+    { code:'CE 101', name:'Engineering Drawing', units:3, days:'MWF', time:'7:00–8:00 AM', room:'CE Lab 1', instructor:'Engr. D. Lim', slots:15, slotsMax:35, prereqs:[], prereqMet:true, status:'available', crossProgram:true },
+  ],
+  BSEE: [
+    { code:'EE 101', name:'Basic Electrical Circuits', units:3, days:'TTH', time:'9:00–10:30 AM', room:'EE Lab', instructor:'Engr. R. Bagaipo', slots:20, slotsMax:35, prereqs:[], prereqMet:true, status:'available', crossProgram:true },
+  ],
+  BSME: [],
+  BSEM: [
+    { code:'EM 101', name:'Electronics Fundamentals', units:3, days:'MWF', time:'1:00–2:00 PM', room:'EM Lab', instructor:'Engr. H. Ocampo', slots:25, slotsMax:35, prereqs:[], prereqMet:true, status:'available', crossProgram:true },
+  ],
+};
+
+/* ──────────────────────────────────────────────────────────
+   STATE
+   ────────────────────────────────────────────────────────── */
+let enlisted = new Set();     // set of subject codes currently checked
+let displayedSubjects = [...subjects];
+
+/* ──────────────────────────────────────────────────────────
+   RENDER TABLE
+   ────────────────────────────────────────────────────────── */
+function renderTable(list) {
+  const tbody = document.getElementById('subjectTableBody');
+  tbody.innerHTML = '';
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:1.5em;color:#aaa;">No subjects found.</td></tr>';
+    return;
+  }
+  list.forEach(s => {
+    const isLocked  = s.status === 'locked';
+    const isFull    = s.status === 'full';
+    const isCross   = s.crossProgram;
+    const isChecked = enlisted.has(s.code);
+
+    const rowClass  = isLocked ? 'row-locked' : isFull ? 'row-full' : isCross ? 'row-cross-program' : isChecked ? 'row-selected' : '';
+
+    // Slot indicator
+    let slotHtml = '';
+    if (isFull) {
+      slotHtml = `<span class="slot-indicator slot-none">0 / ${s.slotsMax}</span>`;
+    } else {
+      const pct = s.slots / s.slotsMax;
+      const cls = pct < 0.2 ? 'slot-low' : 'slot-ok';
+      slotHtml = `<span class="slot-indicator ${cls}">${s.slots} / ${s.slotsMax}</span>`;
+    }
+
+    // Status badge
+    let statusHtml = '';
+    if (isLocked) {
+      statusHtml = `
+        <span class="status-badge badge-locked">
+          🔒 Locked
+        </span>
+        <div class="prereq-info" style="margin-top:3px;">
+          ℹ️ Requires: ${s.prereqs.join(', ')}
+          <span class="prereq-tooltip">Prerequisite(s) not passed: ${s.prereqs.join(', ')}</span>
+        </div>`;
+    } else if (isFull) {
+      statusHtml = `<span class="status-badge badge-full">⊘ Full</span>`;
+    } else if (isCross) {
+      statusHtml = isChecked
+        ? `<span class="status-badge badge-enlisted">✔ Enlisted</span>`
+        : `<span class="status-badge badge-cross">🔀 Cross-Program</span>`;
+    } else {
+      statusHtml = isChecked
+        ? `<span class="status-badge badge-enlisted">✔ Enlisted</span>`
+        : `<span class="status-badge badge-available">✔ Available</span>`;
+    }
+
+    const disabled = isLocked || isFull ? 'disabled' : '';
+    const checked  = isChecked ? 'checked' : '';
+
+    tbody.innerHTML += `
+      <tr class="${rowClass}" id="row-${s.code.replace(/\s/g,'')}">
+        <td>
+          <input type="checkbox" class="enlist-check"
+                 ${disabled} ${checked}
+                 onchange="toggleSubject('${s.code}', this)">
+        </td>
+        <td><span class="subj-code">${s.code}</span>${isCross ? '<br><small style="color:#888;">Other Program</small>' : ''}</td>
+        <td>${s.name}</td>
+        <td><span class="units-badge">${s.units}</span></td>
+        <td>
+          <span class="schedule-cell">
+            <span class="schedule-day">${s.days}</span><br>
+            <span class="schedule-time">${s.time}</span>
+          </span>
+        </td>
+        <td>${s.room}</td>
+        <td>${s.instructor}</td>
+        <td>${slotHtml}</td>
+        <td>${statusHtml}</td>
+      </tr>`;
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   UNIT LOAD UPDATE
+   ────────────────────────────────────────────────────────── */
+function updateUnitLoad() {
+  const allSubjects = [...subjects, ...Object.values(crossProgramSubjects).flat()];
+  let total = 0;
+  enlisted.forEach(code => {
+    const s = allSubjects.find(x => x.code === code);
+    if (s) total += s.units;
+  });
+
+  const pct = Math.min((total / UNIT_MAX) * 100, 100);
+  const fill = document.getElementById('unit-fill');
+  fill.style.width = pct + '%';
+  fill.classList.remove('warn','over');
+
+  document.getElementById('unit-current').textContent = total;
+  document.getElementById('unit-warn-msg').style.display = 'none';
+  document.getElementById('unit-over-msg').style.display  = 'none';
+
+  if (total > UNIT_MAX) {
+    fill.classList.add('over');
+    document.getElementById('unit-over-msg').style.display = 'inline';
+  } else if (total >= UNIT_MAX - 3) {
+    fill.classList.add('warn');
+    document.getElementById('unit-warn-msg').style.display = 'inline';
+  }
+
+  // Selected summary
+  document.getElementById('selected-count').textContent = enlisted.size;
+  document.getElementById('selected-units').textContent = total;
+
+  // Tab badge
+  document.getElementById('tab-badge-regular').textContent = enlisted.size;
+
+  // Enable/disable Enlist button
+  const canEnlist = enlisted.size > 0 && total <= UNIT_MAX;
+  document.getElementById('enlistBtn').disabled = !canEnlist;
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOGGLE CHECKBOX
+   ────────────────────────────────────────────────────────── */
+function toggleSubject(code, checkbox) {
+  const allSubjects = [...subjects, ...Object.values(crossProgramSubjects).flat()];
+  const s = allSubjects.find(x => x.code === code);
+
+  if (checkbox.checked) {
+    // Check if adding would exceed limit
+    const currentUnits = getEnlistedUnits();
+    if (currentUnits + s.units > UNIT_MAX) {
+      checkbox.checked = false;
+      showToast(`Cannot add "${s.code}" — exceeds the ${UNIT_MAX}-unit limit!`, 'error');
+      return;
+    }
+    enlisted.add(code);
+  } else {
+    enlisted.delete(code);
+  }
+  updateUnitLoad();
+  renderTable(displayedSubjects);   // re-render to reflect status badge change
+}
+
+function getEnlistedUnits() {
+  const allSubjects = [...subjects, ...Object.values(crossProgramSubjects).flat()];
+  let total = 0;
+  enlisted.forEach(code => {
+    const s = allSubjects.find(x => x.code === code);
+    if (s) total += s.units;
+  });
+  return total;
+}
+
+/* ──────────────────────────────────────────────────────────
+   SEARCH / FILTER
+   ────────────────────────────────────────────────────────── */
+function filterSubjects(query) {
+  const q = query.toLowerCase();
+  displayedSubjects = [...subjects,
+    ...(crossProgramMode ? (crossProgramSubjects[document.getElementById('crossProgramSelect').value] || []) : [])
+  ].filter(s =>
+    s.code.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
+  );
+  renderTable(displayedSubjects);
+}
+
+/* ──────────────────────────────────────────────────────────
+   CROSS-PROGRAM TOGGLE
+   ────────────────────────────────────────────────────────── */
+let crossProgramMode = false;
+
+function toggleCrossProgram() {
+  crossProgramMode = !crossProgramMode;
+  const btn   = document.getElementById('crossProgramBtn');
+  const panel = document.getElementById('crossProgramPanel');
+  btn.classList.toggle('active', crossProgramMode);
+  panel.classList.toggle('open', crossProgramMode);
+  if (!crossProgramMode) {
+    displayedSubjects = [...subjects];
+    renderTable(displayedSubjects);
+  }
+}
+
+function loadCrossProgram() {
+  const prog = document.getElementById('crossProgramSelect').value;
+  const cross = crossProgramSubjects[prog] || [];
+  displayedSubjects = [...subjects, ...cross];
+  renderTable(displayedSubjects);
+}
+
+/* ──────────────────────────────────────────────────────────
+   CLEAR ALL
+   ────────────────────────────────────────────────────────── */
+function clearAll() {
+  enlisted.clear();
+  updateUnitLoad();
+  renderTable(displayedSubjects);
+  showToast('All selections cleared.', 'warn');
+}
+
+/* ──────────────────────────────────────────────────────────
+   TABS
+   ────────────────────────────────────────────────────────── */
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.enrollment-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-' + tabId).classList.add('active');
+}
+
+/* ──────────────────────────────────────────────────────────
+   MODAL
+   ────────────────────────────────────────────────────────── */
+function openConfirmModal() {
+  if (enlisted.size === 0) return;
+  const allSubjects = [...subjects, ...Object.values(crossProgramSubjects).flat()];
+  const list  = document.getElementById('modal-subject-list');
+  list.innerHTML = '';
+  let totalUnits = 0;
+  enlisted.forEach(code => {
+    const s = allSubjects.find(x => x.code === code);
+    if (s) {
+      list.innerHTML += `<li><strong>${s.code}</strong> – ${s.name} (${s.units} units)</li>`;
+      totalUnits += s.units;
+    }
+  });
+  document.getElementById('modal-total-units').textContent = totalUnits + ' unit(s)';
+  document.getElementById('confirmModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('open');
+}
+
+function confirmEnlistment() {
+  closeModal();
+  showToast('✅ Enlistment submitted successfully! Pending Registrar approval.', 'success');
+  enlisted.clear();
+  updateUnitLoad();
+  renderTable(displayedSubjects);
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOAST
+   ────────────────────────────────────────────────────────── */
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(40px)'; toast.style.transition = 'all 0.3s'; setTimeout(() => toast.remove(), 350); }, 3000);
+}
+
+/* Close modal on overlay click */
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+/* ──────────────────────────────────────────────────────────
+   INIT
+   ────────────────────────────────────────────────────────── */
+displayedSubjects = [...subjects];
+renderTable(displayedSubjects);
+updateUnitLoad();
+</script>
+</body>
+</html>
