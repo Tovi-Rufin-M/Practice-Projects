@@ -1,6 +1,5 @@
 public class test {
     public static void main(String[] args) {
-        System.out.println("Starting the UI...");
-        ui.main(args);
+        new UI("My Window");
     }
 }
