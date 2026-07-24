@@ -1,21 +1,31 @@
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.JFrame;
 
-public class UI extends Frame {
+public class UI extends JFrame {
 
-    public UI(String title) {
+    public UI() {
+        this("50x50 Developer Style Maze Game", 1035, 780, new Color(12, 16, 23));
+    }
+
+    public UI(String title, int width, int height, Color color) {
         super(title);
+        setSize(width, height);
+        setMinimumSize(new Dimension(750, 500));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(true);
+        getContentPane().setBackground(color);
 
-        setSize(400, 300);
+        MazePanel mazePanel = new MazePanel();
+        setLayout(new BorderLayout());
+        add(mazePanel, BorderLayout.CENTER);
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-
+        pack();
         setVisible(true);
+
+        // Ensure key listener captures focus immediately
+        mazePanel.requestFocusInWindow();
     }
 }
