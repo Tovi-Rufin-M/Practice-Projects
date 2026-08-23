@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Rivera | Personal Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <span class="logo-bracket">&lt;</span>Alex<span class="logo-dot">.</span>dev <span class="logo-bracket">/&gt;</span>
+            </a>
+
+            <nav class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#skills" class="nav-link">Skills</a></li>
+                    <li><a href="#projects" class="nav-link">Projects</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon moon-icon"></i>
+                    <i class="fas fa-sun sun-icon"></i>
+                </button>
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars open-icon"></i>
+                    <i class="fas fa-times close-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-bg-glow"></div>
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        <span>Available for new opportunities</span>
+                    </div>
+
+                    <h1 class="hero-title">
+                        Hi, I'm <span class="text-gradient">Alex Rivera</span>
+                    </h1>
+                    
+                    <h2 class="hero-subtitle">
+                        Building <span class="typewriter-text" id="typewriter">digital experiences</span>
+                    </h2>
+
+                    <p class="hero-description">
+                        Full-Stack Web Developer passionate about crafting clean, modern interfaces, 
+                        robust architectures, and seamless user experiences.
+                    </p>
+
+                    <div class="hero-cta-group">
+                        <a href="#projects" class="btn btn-primary">
+                            <span>View Projects</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">
+                            <span>Get In Touch</span>
+                            <i class="far fa-paper-plane"></i>
+                        </a>
+                        <a href="#resume" class="btn btn-outline">
+                            <i class="fas fa-file-arrow-down"></i>
+                            <span>CV</span>
+                        </a>
+                    </div>
+
+                    <div class="hero-socials">
+                        <span class="socials-label">Connect:</span>
+                        <div class="social-links">
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Twitter">
+                                <i class="fab fa-x-twitter"></i>
+                            </a>
+                            <a href="mailto:alex@example.com" class="social-icon" aria-label="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="profile-card-wrapper">
+                        <!-- Decorative floating tech badges -->
+                        <div class="floating-badge badge-top-left">
+                            <i class="fab fa-react" style="color: #61dafb;"></i>
+                            <span>React</span>
+                        </div>
+                        <div class="floating-badge badge-top-right">
+                            <i class="fab fa-node-js" style="color: #68a063;"></i>
+                            <span>Node.js</span>
+                        </div>
+                        <div class="floating-badge badge-bottom-left">
+                            <i class="fab fa-js-square" style="color: #f7df1e;"></i>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="floating-badge badge-bottom-right">
+                            <i class="fab fa-css3-alt" style="color: #38bdf8;"></i>
+                            <span>CSS3 & HTML5</span>
+                        </div>
+
+                        <!-- Card / Code Display -->
+                        <div class="code-window">
+                            <div class="window-header">
+                                <div class="window-buttons">
+                                    <span class="btn-dot close"></span>
+                                    <span class="btn-dot minimize"></span>
+                                    <span class="btn-dot maximize"></span>
+                                </div>
+                                <div class="window-title">developer.js</div>
+                            </div>
+                            <div class="window-body">
+                                <pre><code><span class="code-keyword">const</span> <span class="code-variable">developer</span> = {
+  <span class="code-property">name</span>: <span class="code-string">'Alex Rivera'</span>,
+  <span class="code-property">role</span>: <span class="code-string">'Full-Stack Developer'</span>,
+  <span class="code-property">location</span>: <span class="code-string">'San Francisco, CA'</span>,
+  <span class="code-property">passions</span>: [<span class="code-string">'Web Dev'</span>, <span class="code-string">'UI/UX'</span>, <span class="code-string">'Clean Code'</span>],
+  <span class="code-property">coffeeLover</span>: <span class="code-boolean">true</span>,
+  <span class="code-function">code</span>: () => {
+    <span class="code-keyword">return</span> <span class="code-string">'Turning ideas into reality✨'</span>;
+  }
+};</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
