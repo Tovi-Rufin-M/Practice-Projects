@@ -49,13 +49,13 @@
     --shadow-glow: 0 0 35px rgba(79, 70, 229, 0.15);
     --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
     
-    --code-bg: #0f172a;
-    --code-keyword: #d8b4fe;
-    --code-variable: #93c5fd;
-    --code-property: #7dd3fc;
-    --code-string: #86efac;
-    --code-boolean: #fb7185;
-    --code-function: #fde047;
+    --code-bg: #dbdbdb;
+    --code-keyword: #8f65b9;
+    --code-variable: #60a5fa;
+    --code-property: #38bdf8;
+    --code-string: #4ade80;
+    --code-boolean: #f43f5e;
+    --code-function: #facc15;
 }
 
 *, *::before, *::after {
